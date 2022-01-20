@@ -1,7 +1,7 @@
 -- Premake LearnVulkan
 workspace "LearnVulkan"
     architecture "x86_64"
-    startproject "Editor"
+    startproject "LearnVulkan"
 
     configurations
     {
@@ -17,10 +17,12 @@ workspace "LearnVulkan"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
+IncludeDir["glad"] = "LearnVulkan/External/glad/include"
 IncludeDir["glfw"] = "LearnVulkan/External/glfw/include"
 IncludeDir["glm"] = "LearnVulkan/External/glm"
 
 group "Dependencies"
+    include "LearnVulkan/External/glad"
     include "LearnVulkan/External/glfw"
 group ""
 
@@ -41,6 +43,7 @@ project "LearnVulkan"
     files
     {
         "%{prj.name}/Source/**.h",
+        "%{prj.name}/Source/**.c",
         "%{prj.name}/Source/**.hpp",
         "%{prj.name}/Source/**.cpp"
     }
@@ -55,17 +58,21 @@ project "LearnVulkan"
     includedirs
     {
         "%{prj.name}/Source",
-        "%{IncludeDir.glm}",
+        "%{IncludeDir.glad}",
         "%{IncludeDir.glfw}",
+        "%{IncludeDir.glm}"
     }
 
     links
     {
-        "glfw",
+        "glad",
+        "glfw"
     }
+
 
     filter "system:windows"
         systemversion "latest"
+        characterset ("MBCS")
 
     filter "configurations:Debug"
         defines "LEARN_VK_DEBUG"
