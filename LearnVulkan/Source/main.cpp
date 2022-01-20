@@ -1,46 +1,45 @@
 #include "Precompiled.h"
 
-#define GLAD_VULKAN_IMPLEMENTATION
+//#define GLAD_VULKAN_IMPLEMENTATION
 #include <glad/vulkan.h>
 
-#define GLFW_INCLUDE_NONE
+//#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
+#include "VulkanRenderer.h"
 
-#include <iostream>
+GLFWwindow* window;
+VulkanRenderer renderer;
 
-int main()
+void InitWindow(std::string _name = "Vulkan Window", const int _width = 800, const int height = 600)
 {
-    int glad_vk_version = gladLoaderLoadVulkan(NULL, NULL, NULL);
-    if(!glad_vk_version)
-    {
-        std::cout << " Failed to load vulkan\n";
-    }
+    //Initialise GLAD
+    gladLoaderLoadVulkan(nullptr, nullptr, nullptr);
+
+    //Initialise GLFW
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
+    window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
+}
 
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+int main()
+{
+    //Create window
+    InitWindow();
 
-    std::cout << extensionCount << " extensions supported\n";
-
-    const glm::mat4 matrix(1.0f);
-    const glm::vec4 vec(1.0f);
-    auto test = matrix * vec;
+    //Create vulkan renderer
+    renderer.Init(window);
 
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
     }
 
-    glfwDestroyWindow(window);
+    //Destroy vulkan renderer
+    renderer.Exit();
 
+    glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;
